@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Objectif 10 km — Marathon de Québec</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+ 
+  :root{
+    --bg: #0E1420;
+    --bg-soft: #161E2E;
+    --card: #1B2436;
+    --line: rgba(255,255,255,0.08);
+    --coral: #FF6B4A;
+    --coral-dim: rgba(255,107,74,0.15);
+    --teal: #2DD4BF;
+    --pink: #FF8FB1;
+    --text: #EDF1F7;
+    --text-dim: #8B94A7;
+    --gold: #F2B84B;
+    --display: 'Bebas Neue', sans-serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+ 
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 55% 35% at 15% 0%, rgba(255,107,74,0.12), transparent),
+      radial-gradient(ellipse 45% 30% at 90% 70%, rgba(45,212,191,0.08), transparent);
+    pointer-events:none; z-index:0;
+  }
+ 
+  .wrap{max-width:720px; margin:0 auto; padding:0 20px;}
+ 
+  /* HERO */
+  .hero{padding:70px 0 40px; position:relative; z-index:1;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--coral); margin-bottom:14px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--coral); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
+  h1.title{
+    font-family:var(--display); font-size:clamp(52px,13vw,88px); line-height:0.92;
+    letter-spacing:0.01em; color:var(--text);
+  }
+  h1.title span{color:var(--coral);}
+  .hero-sub{font-size:16px; color:var(--text-dim); margin-top:16px; max-width:480px; line-height:1.6;}
+ 
+  .countdown-row{
+    display:flex; gap:12px; margin-top:32px; flex-wrap:wrap;
+  }
+  .count-card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 20px; text-align:center; min-width:84px;
+  }
+  .count-num{font-family:var(--mono); font-size:28px; font-weight:700; color:var(--teal);}
+  .count-label{font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-top:4px;}
+ 
+  .start-end{
+    margin-top:28px; display:flex; align-items:center; gap:16px;
+    font-family:var(--mono); font-size:13px; color:var(--text-dim);
+  }
+  .start-end .arrow{color:var(--coral); font-size:16px;}
+  .start-end strong{color:var(--text); font-weight:600;}
+ 
+  /* PROGRESS BAR */
+  .progress-section{padding:30px 0; position:relative; z-index:1;}
+  .progress-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px;}
+  .progress-head h3{font-family:var(--sans); font-size:14px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.05em;}
+  .progress-pct{font-family:var(--mono); font-size:22px; font-weight:700; color:var(--coral);}
+  .bar-track{height:10px; background:var(--card); border-radius:100px; overflow:hidden; border:1px solid var(--line);}
+  .bar-fill{height:100%; background:linear-gradient(90deg, var(--coral), var(--gold)); width:0%; transition:width 0.6s ease; border-radius:100px;}
+  .progress-note{font-size:12px; color:var(--text-dim); margin-top:8px; font-family:var(--mono);}
+ 
+  /* PHASES */
+  .phases{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:36px;}
+  .phase-card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 10px; text-align:center;}
+  .phase-card .ph-num{font-family:var(--mono); font-size:10px; color:var(--coral); text-transform:uppercase; letter-spacing:0.05em;}
+  .phase-card .ph-name{font-family:var(--sans); font-size:12px; font-weight:600; margin-top:6px; line-height:1.3;}
+  .phase-card .ph-weeks{font-size:10px; color:var(--text-dim); margin-top:4px;}
+  @media (max-width:520px){.phases{grid-template-columns:repeat(2,1fr);}}
+ 
+  section{padding:50px 0; position:relative; z-index:1;}
+  h2.section-title{font-family:var(--display); font-size:clamp(28px,6vw,38px); letter-spacing:0.01em; margin-bottom:6px;}
+  .section-desc{color:var(--text-dim); font-size:14px; margin-bottom:24px; max-width:520px; line-height:1.6;}
+ 
+  /* WEEK ACCORDION */
+  .week-card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    margin-bottom:12px; overflow:hidden;
+  }
+  .week-head{
+    padding:16px 18px; display:flex; align-items:center; justify-content:space-between;
+    cursor:pointer; user-select:none;
+  }
+  .week-head:hover{background:rgba(255,255,255,0.02);}
+  .week-head-left{display:flex; align-items:center; gap:14px;}
+  .week-badge{
+    font-family:var(--mono); font-size:11px; color:var(--text-dim); background:var(--bg-soft);
+    border:1px solid var(--line); border-radius:8px; padding:4px 9px; flex-shrink:0;
+  }
+  .week-title{font-weight:700; font-size:15px;}
+  .week-phase-tag{font-size:10px; color:var(--coral); text-transform:uppercase; letter-spacing:0.05em; margin-top:2px; font-family:var(--mono);}
+  .week-check{font-family:var(--mono); font-size:12px; color:var(--teal);}
+  .chevron{transition:transform 0.25s ease; color:var(--text-dim); font-size:14px;}
+  .week-card.open .chevron{transform:rotate(180deg);}
+  .week-body{max-height:0; overflow:hidden; transition:max-height 0.35s ease;}
+  .week-body-inner{padding:0 18px 18px;}
+ 
+  .session-row{
+    display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-top:1px solid var(--line);
+  }
+  .session-row:first-child{border-top:none;}
+  .chk{
+    width:22px; height:22px; border-radius:6px; border:1.5px solid var(--text-dim);
+    flex-shrink:0; margin-top:2px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:all 0.2s ease; background:transparent;
+  }
+  .chk.done{background:var(--teal); border-color:var(--teal);}
+  .chk.done::after{content:'✓'; color:#0E1420; font-size:13px; font-weight:700;}
+  .session-body{flex:1;}
+  .session-label{font-size:12px; font-weight:700; color:var(--coral); text-transform:uppercase; letter-spacing:0.04em; font-family:var(--mono);}
+  .session-main{font-size:14px; margin-top:4px; line-height:1.5;}
+  .session-main.struck{text-decoration:line-through; color:var(--text-dim);}
+  .session-strength{font-size:13px; color:var(--text-dim); margin-top:6px; padding-top:6px; border-top:1px dashed var(--line); line-height:1.5;}
+  .session-strength strong{color:var(--pink);}
+ 
+  /* MILESTONES */
+  .milestone{
+    display:flex; gap:16px; background:var(--card); border:1px solid var(--line);
+    border-radius:14px; padding:18px; margin-bottom:12px; align-items:center;
+    transition:border-color 0.3s ease, background 0.3s ease;
+  }
+  .milestone.unlocked{border-color:var(--gold); background:linear-gradient(135deg, var(--card), rgba(242,184,75,0.06));}
+  .milestone-icon{
+    width:46px; height:46px; border-radius:50%; background:var(--bg-soft); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;
+    transition:all 0.3s ease;
+  }
+  .milestone.unlocked .milestone-icon{background:var(--gold); box-shadow:0 0 20px rgba(242,184,75,0.4);}
+  .milestone-goal{font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.05em; font-family:var(--mono);}
+  .milestone-reward{font-size:14px; margin-top:3px; line-height:1.4;}
+  .milestone-reward strong{color:var(--pink);}
+  .milestone-status{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--text-dim); flex-shrink:0; text-align:right;}
+  .milestone.unlocked .milestone-status{color:var(--gold);}
+ 
+  /* EQUIPMENT */
+  .equip-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px;}
+  .equip-card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px;}
+  .equip-card h4{font-size:13px; color:var(--teal); font-family:var(--mono); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;}
+  .equip-card ul{list-style:none; font-size:13px; color:var(--text-dim); line-height:1.9;}
+  .equip-card li::before{content:'— '; color:var(--coral);}
+  @media (max-width:520px){.equip-grid{grid-template-columns:1fr;}}
+ 
+  .note-box{
+    background:var(--bg-soft); border-left:3px solid var(--teal); border-radius:4px 12px 12px 4px;
+    padding:16px 18px; font-size:13px; color:var(--text-dim); line-height:1.6; margin-top:20px;
+  }
+  .note-box strong{color:var(--text);}
+ 
+  .footer-note{text-align:center; padding:40px 0 70px; font-family:var(--mono); font-size:11px; color:var(--text-dim);}
+ 
+  .reset-link{
+    background:transparent; border:1px solid var(--line); color:var(--text-dim); font-family:var(--mono);
+    font-size:11px; padding:8px 14px; border-radius:100px; cursor:pointer; margin-top:6px;
+  }
+  .reset-link:hover{border-color:var(--coral); color:var(--coral);}
+ 
+  @media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important;}}
+</style>
+</head>
+<body>
+ 
+<div class="wrap">
+ 
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span> Programme perso · Toi, babe</div>
+    <div class="eyebrow" id="syncBadge" style="color:var(--text-dim); font-size:11px;">🔴 connexion...</div>
+    <h1 class="title">Objectif<br><span>10 KM.</span></h1>
+    <p class="hero-sub">Marathon Beneva de Québec — 3 octobre 2026. Tu pars de zéro, t'arrives sur la ligne de départ prête. Course + fessiers + abs, 3 fois semaine, on coche ça ensemble. Notre première séance ensemble, disons que c'était pas fameux — mais tu m'as bien appuyé sur les abs.</p>
+ 
+    <div class="countdown-row" id="countdownRow"></div>
+ 
+    <div class="start-end">
+      <span>Aujourd'hui: <strong>0 min de course</strong></span>
+      <span class="arrow">→</span>
+      <span>3 oct: <strong>10 km, ligne d'arrivée</strong></span>
+    </div>
+  </div>
+ 
+  <div class="progress-section">
+    <div class="progress-head">
+      <h3>Séances complétées</h3>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="progressBar"></div></div>
+    <div class="progress-note" id="progressNote">0 / 39 séances</div>
+ 
+    <div class="phases">
+      <div class="phase-card"><div class="ph-num">Phase 1</div><div class="ph-name">Fondation</div><div class="ph-weeks">Sem. 1–4</div></div>
+      <div class="phase-card"><div class="ph-num">Phase 2</div><div class="ph-name">Course continue</div><div class="ph-weeks">Sem. 5–8</div></div>
+      <div class="phase-card"><div class="ph-num">Phase 3</div><div class="ph-name">Distance</div><div class="ph-weeks">Sem. 9–12</div></div>
+      <div class="phase-card"><div class="ph-num">Phase 4</div><div class="ph-name">Le jour J</div><div class="ph-weeks">Sem. 13</div></div>
+    </div>
+  </div>
+ 
+  <section>
+    <h2 class="section-title">L'équipement</h2>
+    <p class="section-desc">Tout est bâti autour de ce que t'as déjà accès.</p>
+    <div class="equip-grid">
+      <div class="equip-card">
+        <h4>Salle de l'immeuble</h4>
+        <ul>
+          <li>Tapis roulant (jours de course, mauvais temps)</li>
+          <li>Poids libres (squats, fentes lestées)</li>
+          <li>Vélo stationnaire (échauffement / récup active)</li>
+          <li>Des tapis de sol aussi, je pense</li>
+          <li>Sûrement d'autre stock — on va l'ajusteer selon ce que tu vois sur place</li>
+        </ul>
+      </div>
+      <div class="equip-card">
+        <h4>Appart</h4>
+        <ul>
+          <li>Tapis de sol (gainage, abs, étirements)</li>
+          <li>Poids du corps (pont fessier, planche, squats)</li>
+          <li>Aucun équipement requis pour ces jours</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+ 
+  <section>
+    <h2 class="section-title">Le programme</h2>
+    <p class="section-desc">13 semaines, 3 séances chacune, environ 40-50 min chaque fois. Fessiers/jambes une journée, gainage/abs l'autre, sortie longue le weekend. Clique sur une semaine pour l'ouvrir, coche au fur et à mesure.</p>
+    <div id="weeksContainer"></div>
+  </section>
+ 
+  <section>
+    <h2 class="section-title">Les récompenses</h2>
+    <p class="section-desc">Chaque palier débloque une récompense. Tu peux me demander de les changer si t'as mieux en tête.</p>
+    <div id="milestonesContainer"></div>
+  </section>
+ 
+  <div class="note-box">
+    <strong>Petit rappel:</strong> le gainage et les squats vont renforcer et tonifier au fil des semaines. C'est la régularité qui fait le plus gros du travail — chaque séance cochée compte, même les jours où t'as pas envie.
+  </div>
+ 
+  <div style="text-align:center; margin-top:30px;">
+    <button class="reset-link" id="resetBtn">réinitialiser le suivi</button>
+  </div>
+ 
+  <div class="footer-note">Mapoupé et maman se sont po sur toi t'as dit que t'allais faire le marathon — le 3 octobre, on leur ferme la bouche. En tout cas moi je crois en toi, Babe. 🖤</div>
+ 
+</div>
+ 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+ 
+const firebaseConfig = {
+  apiKey: "AIzaSyAVcVb3EzuSJy5JVd3xkxpmKRg_v68c5h8",
+  authDomain: "objectif-10km.firebaseapp.com",
+  projectId: "objectif-10km",
+  storageBucket: "objectif-10km.firebasestorage.app",
+  messagingSenderId: "291455616007",
+  appId: "1:291455616007:web:61d5b977b9abe1cff596a2"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+const progressRef = doc(db, "progress", "marathon-tracker");
+const RACE_DATE = new Date('2026-10-03T09:00:00');
+const TODAY = new Date('2026-07-04T00:00:00');
+ 
+// ---- countdown ----
+function renderCountdown(){
+  const diffMs = RACE_DATE - new Date();
+  const totalDays = Math.max(0, Math.ceil(diffMs / 86400000));
+  const weeks = Math.floor(totalDays / 7);
+  const days = totalDays % 7;
+  const sessionsLeft = Math.max(0, 39 - Object.keys(getState()).filter(k=>getState()[k]).length);
+  document.getElementById('countdownRow').innerHTML = `
+    <div class="count-card"><div class="count-num">${weeks}</div><div class="count-label">semaines</div></div>
+    <div class="count-card"><div class="count-num">${days}</div><div class="count-label">jours</div></div>
+    <div class="count-card"><div class="count-num">${totalDays}</div><div class="count-label">jours total</div></div>
+  `;
+}
+ 
+// ---- program data ----
+// each week: [phaseTag, sessions[3]]
+// session: {label, main, strength}
+const weeks = [
+  // PHASE 1 — Fondation (1-4)
+  {phase:'Phase 1', sessions:[
+    {label:'Séance 1', main:'Échauffement 6 min, puis 6×(Course 2 min / Marche 1:30), retour au calme 6 min', strength:'<strong>Gainage:</strong> Planche 3×25s, Dead bug 3×10/côté'},
+    {label:'Séance 2', main:'Échauffement 6 min, puis 6×(Course 2 min / Marche 1:30), retour au calme 6 min', strength:'<strong>Fessiers:</strong> Squats poids du corps 3×15, Pont fessier 3×15'},
+    {label:'Séance 3 (longue)', main:'Marche rapide avec 3×3 min de trot léger inséré, 30 min au total', strength:'<strong>Mobilité:</strong> Étirements complets 12 min'},
+  ]},
+  {phase:'Phase 1', sessions:[
+    {label:'Séance 1', main:'Échauffement 6 min, puis 6×(Course 2:30 / Marche 1:30), retour au calme 6 min', strength:'<strong>Gainage:</strong> Planche 3×30s, Russian twists 3×15'},
+    {label:'Séance 2', main:'Échauffement 6 min, puis 6×(Course 2:30 / Marche 1:30), retour au calme 6 min', strength:'<strong>Fessiers:</strong> Squats 3×16, Fentes alternées 3×12/jambe'},
+    {label:'Séance 3 (longue) 🎉', main:'4×4 min de trot continu entrecoupé de marche — 32-35 min au total, première vraie sortie longue', strength:'<strong>Mobilité:</strong> Étirements 12 min'},
+  ]},
+  {phase:'Phase 1', sessions:[
+    {label:'Séance 1', main:'Échauffement 6 min, puis 5×(Course 3:30 / Marche 1:30), retour au calme 6 min', strength:'<strong>Gainage:</strong> Planche 3×35s, Mountain climbers 3×24'},
+    {label:'Séance 2', main:'Échauffement 6 min, puis 5×(Course 3:30 / Marche 1:30), retour au calme 6 min', strength:'<strong>Fessiers:</strong> Squats avec poids légers 3×15, Pont fessier 3×20'},
+    {label:'Séance 3 (longue)', main:'4×(Course 5 min / Marche 1:30) — ça commence à ressembler à de la vraie course', strength:'<strong>Mobilité:</strong> Étirements 12 min'},
+  ]},
+  {phase:'Phase 1', sessions:[
+    {label:'Séance 1', main:'Échauffement 6 min, course continue 15 min, retour au calme 6 min', strength:'<strong>Gainage:</strong> Planche 3×40s, Dead bug 3×12/côté'},
+    {label:'Séance 2', main:'Échauffement 6 min, course continue 15 min, retour au calme 6 min', strength:'<strong>Fessiers:</strong> Squats lestés 3×15, Fentes 3×12/jambe'},
+    {label:'Séance 3 (longue) 🎉', main:'Course continue 18-20 min sans arrêter — le premier gros palier!', strength:'<strong>Mobilité:</strong> Étirements 12 min'},
+  ]},
+  // PHASE 2 — Course continue (5-8)
+  {phase:'Phase 2', sessions:[
+    {label:'Séance 1', main:'Échauffement 5 min, course continue 20 min, retour au calme', strength:'<strong>Gainage:</strong> Planche 3×45s, Russian twists 3×18'},
+    {label:'Séance 2', main:'Échauffement 5 min, course continue 20 min, retour au calme', strength:'<strong>Fessiers:</strong> Squats lestés 3×16, Hip thrust 3×15'},
+    {label:'Séance 3 (longue)', main:'Course continue 25 min à rythme confortable (~3.5 km)', strength:'<strong>Mobilité:</strong> Étirements 12 min'},
+  ]},
+  {phase:'Phase 2', sessions:[
+    {label:'Séance 1', main:'Échauffement 5 min, course continue 22 min, retour au calme', strength:'<strong>Gainage:</strong> Planche 3×50s, Mountain climbers 3×28'},
+    {label:'Séance 2', main:'Échauffement 5 min, course continue 22 min, retour au calme', strength:'<strong>Fessiers:</strong> Squats sautés léger 3×12, Fentes lestées 3×14/jambe'},
+    {label:'Séance 3 (longue)', main:'Course continue 28-30 min (~4 km)', strength:'<strong>Mobilité:</strong> Étirements 12 min'},
+  ]},
+  {phase:'Phase 2', sessions:[
+    {label:'Séance 1', main:'Échauffement 5 min, course continue 25 min, retour au calme', strength:'<strong>Gainage:</strong> Planche avec levée de jambe 3×35s, Dead bug 3×15'},
+    {label:'Séance 2', main:'Échauffement 5 min, course continue 25 min, retour au calme', strength:'<strong>Fessiers:</strong> Squats lestés 4×14, Hip thrust 3×18'},
+    {label:'Séance 3 (longue)', main:'Course continue 33-35 min (~4.5-5 km)', strength:'<strong>Mobilité:</strong> Étirements 14 min'},
+  ]},
+  {phase:'Phase 2', sessions:[
+    {label:'Séance 1', main:'Échauffement 5 min, course continue 28 min, retour au calme', strength:'<strong>Gainage:</strong> Planche latérale 3×30s/côté'},
+    {label:'Séance 2', main:'Échauffement 5 min, course continue 28 min, retour au calme', strength:'<strong>Fessiers:</strong> Squats lestés 4×16, Fentes marchées 3×14/jambe'},
+    {label:'Séance 3 (longue) 🎉', main:'Course continue 38-40 min — environ 5.5-6 km, ta première vraie distance!', strength:'<strong>Mobilité:</strong> Étirements 14 min'},
+  ]},
+  // PHASE 3 — Distance (9-12)
+  {phase:'Phase 3', sessions:[
+    {label:'Séance 1', main:'Course continue 30 min, allure confortable', strength:'<strong>Gainage:</strong> Circuit planche + twists, 3 tours'},
+    {label:'Séance 2', main:'Course continue 30 min, allure confortable', strength:'<strong>Fessiers:</strong> Squats lestés 4×16, Hip thrust 4×16'},
+    {label:'Séance 3 (longue)', main:'Course continue 45 min (~6.5 km)', strength:'<strong>Mobilité:</strong> Étirements 14 min'},
+  ]},
+  {phase:'Phase 3', sessions:[
+    {label:'Séance 1', main:'Course continue 30 min, insère 4×1 min à allure un peu plus vite', strength:'<strong>Gainage:</strong> Circuit planche + mountain climbers, 3 tours'},
+    {label:'Séance 2', main:'Course continue 30 min, allure confortable', strength:'<strong>Fessiers:</strong> Squats lestés 4×16, Fentes lestées 4×14/jambe'},
+    {label:'Séance 3 (longue) 🎉', main:'Course continue 50 min (~7-7.5 km)', strength:'<strong>Mobilité:</strong> Étirements 14 min'},
+  ]},
+  {phase:'Phase 3', sessions:[
+    {label:'Séance 1', main:'Course continue 28 min, rythme facile (semaine plus légère)', strength:'<strong>Gainage:</strong> Planche 3×50s, Dead bug 3×15'},
+    {label:'Séance 2', main:'Course continue 32 min, allure confortable', strength:'<strong>Fessiers:</strong> Squats + hip thrust, 3 tours modérés'},
+    {label:'Séance 3 (longue)', main:'Course continue 55-58 min (~8.5 km)', strength:'<strong>Mobilité:</strong> Étirements 14 min'},
+  ]},
+  {phase:'Phase 3', sessions:[
+    {label:'Séance 1', main:'Course continue 28 min, allure course visée', strength:'<strong>Gainage:</strong> Circuit complet, 2 tours (semaine plus légère en renfo)'},
+    {label:'Séance 2', main:'Course continue 28 min, allure confortable', strength:'<strong>Fessiers:</strong> 2 tours modérés, on garde les jambes fraîches'},
+    {label:'Séance 3 (longue) 🎉', main:'Course continue 60-65 min (~9.5-10 km) — la répétition générale!', strength:'<strong>Mobilité:</strong> Étirements 15 min'},
+  ]},
+  // PHASE 4 — Taper (13)
+  {phase:'Phase 4', sessions:[
+    {label:'Séance 1 (léger)', main:'Course facile 15-18 min, tranquille', strength:'<strong>Mobilité seulement:</strong> Étirements doux 10 min'},
+    {label:'Séance 2 (réveil)', main:'Course très facile 10-12 min + quelques accélérations courtes', strength:'<strong>Mobilité seulement:</strong> Étirements doux 8 min'},
+    {label:'JOUR DE COURSE 🏁', main:'3 octobre — 10 km officiel. Tu es prête. Va chercher ta médaille.', strength:''},
+  ]},
+];
+ 
+const milestones = [
+  {icon:'👟', week:2, goal:'Fin semaine 2 — première sortie longue', reward:"Feu vert avec ma carte pour toute ta routine care — épilation, ongles, cheveux, tu choisis"},
+  {icon:'🔥', week:4, goal:'Fin semaine 4 — 18-20 min de course continue', reward:"C'est une surprise 😏"},
+  {icon:'💪', week:6, goal:'Fin semaine 6 — 22 min continu (~3 km)', reward:"Un compliment écrit à la main, caché quelque part que tu vas trouver"},
+  {icon:'🏅', week:8, goal:'Fin semaine 8 — 5.5-6 km, ta première vraie distance', reward:"Brunch de ton choix, câlins illimités inclus"},
+  {icon:'⚡', week:10, goal:'Fin semaine 10 — 7-7.5 km', reward:"C'est une surprise encore😏"},
+  {icon:'🎯', week:12, goal:'Fin semaine 12 — 9.5-10 km, répétition générale', reward:"C'est moi qui décide tout pour la prochaine sortie, cette fois — même si je sais que t'aimes pas trop avec ton indécision 😅"},
+  {icon:'🏆', week:13, goal:'3 octobre — 10 km officiel!', reward:"Médaille autour du cou + un vrai cadeau qui t'attend à la ligne d'arrivée + une autre surprise de moi 😉"},
+];
+ 
+// ---- storage helpers (Firestore, temps réel) ----
+let stateCache = {};
+let syncReady = false;
+function getState(){ return stateCache || {}; }
+ 
+function watchState(onChange){
+  onSnapshot(progressRef, (snap)=>{
+    stateCache = (snap.exists() && snap.data().sessions) ? snap.data().sessions : {};
+    syncReady = true;
+    setSyncBadge(true);
+    onChange();
+  }, (err)=>{
+    console.error('Erreur de synchro', err);
+    setSyncBadge(false);
+  });
+}
+ 
+async function saveState(){
+  try{
+    await setDoc(progressRef, { sessions: stateCache }, { merge:false });
+  }catch(e){
+    console.error('Erreur de sauvegarde', e);
+    setSyncBadge(false);
+  }
+}
+ 
+function setSyncBadge(ok){
+  const el = document.getElementById('syncBadge');
+  if(!el) return;
+  el.textContent = ok ? '🟢 synchro en direct' : '🔴 pas de connexion';
+}
+ 
+function sessionKey(weekIdx, sessionIdx){ return 'w'+weekIdx+'s'+sessionIdx; }
+ 
+// ---- render weeks ----
+function renderWeeks(){
+  const container = document.getElementById('weeksContainer');
+  container.innerHTML = '';
+  weeks.forEach((wk, wi)=>{
+    const card = document.createElement('div');
+    card.className = 'week-card';
+    const doneCount = wk.sessions.filter((s,si)=>getState()[sessionKey(wi,si)]).length;
+    card.innerHTML = `
+      <div class="week-head" data-idx="${wi}">
+        <div class="week-head-left">
+          <span class="week-badge">S${wi+1}</span>
+          <div>
+            <div class="week-title">Semaine ${wi+1}</div>
+            <div class="week-phase-tag">${wk.phase}</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="week-check">${doneCount}/3</span>
+          <span class="chevron">▾</span>
+        </div>
+      </div>
+      <div class="week-body"><div class="week-body-inner">
+        ${wk.sessions.map((s,si)=>`
+          <div class="session-row">
+            <div class="chk ${getState()[sessionKey(wi,si)] ? 'done':''}" data-week="${wi}" data-session="${si}"></div>
+            <div class="session-body">
+              <div class="session-label">${s.label}</div>
+              <div class="session-main ${getState()[sessionKey(wi,si)] ? 'struck':''}">${s.main}</div>
+              ${s.strength ? `<div class="session-strength">${s.strength}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div></div>
+    `;
+    container.appendChild(card);
+  });
+ 
+  // toggle open/close
+  container.querySelectorAll('.week-head').forEach(head=>{
+    head.addEventListener('click', ()=>{
+      const card = head.closest('.week-card');
+      const body = card.querySelector('.week-body');
+      const isOpen = card.classList.contains('open');
+      if(isOpen){
+        body.style.maxHeight = null;
+        card.classList.remove('open');
+      }else{
+        card.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+ 
+  // checkbox toggle
+  container.querySelectorAll('.chk').forEach(chk=>{
+    chk.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      const wi = chk.dataset.week, si = chk.dataset.session;
+      const key = sessionKey(wi,si);
+      stateCache[key] = !stateCache[key];
+      await saveState();
+      renderWeeks();
+      renderProgress();
+      renderMilestones();
+      renderCountdown();
+      // re-open the week that was just touched
+      const card = document.querySelectorAll('.week-card')[wi];
+      card.classList.add('open');
+      const body = card.querySelector('.week-body');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    });
+  });
+}
+ 
+function totalSessionsDone(){
+  let n = 0;
+  weeks.forEach((wk,wi)=> wk.sessions.forEach((s,si)=>{ if(getState()[sessionKey(wi,si)]) n++; }));
+  return n;
+}
+ 
+function weeksFullyDone(){
+  let n = 0;
+  weeks.forEach((wk,wi)=>{
+    const allDone = wk.sessions.every((s,si)=>getState()[sessionKey(wi,si)]);
+    if(allDone) n = wi+1;
+  });
+  return n;
+}
+ 
+function renderProgress(){
+  const total = 39;
+  const done = totalSessionsDone();
+  const pct = Math.round((done/total)*100);
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressNote').textContent = done + ' / ' + total + ' séances';
+}
+ 
+function renderMilestones(){
+  const container = document.getElementById('milestonesContainer');
+  const weeksDone = weeksFullyDone();
+  container.innerHTML = milestones.map(m=>{
+    const unlocked = weeksDone >= m.week;
+    return `
+      <div class="milestone ${unlocked ? 'unlocked':''}">
+        <div class="milestone-icon">${unlocked ? m.icon : '🔒'}</div>
+        <div>
+          <div class="milestone-goal">${m.goal}</div>
+          <div class="milestone-reward"><strong>Récompense:</strong> ${m.reward}</div>
+        </div>
+        <div class="milestone-status">${unlocked ? 'débloqué' : 'à venir'}</div>
+      </div>
+    `;
+  }).join('');
+}
+ 
+document.getElementById('resetBtn').addEventListener('click', async ()=>{
+  if(confirm('Réinitialiser tout le suivi? Ça va tout décocher pour vous deux.')){
+    stateCache = {};
+    await saveState();
+    renderWeeks();
+    renderProgress();
+    renderMilestones();
+    renderCountdown();
+  }
+});
+ 
+function renderAll(){
+  renderWeeks();
+  renderProgress();
+  renderMilestones();
+  renderCountdown();
+}
+ 
+watchState(renderAll);
+renderCountdown();
+setInterval(renderCountdown, 60000);
+ 
+</script>
+</body>
+</html>
